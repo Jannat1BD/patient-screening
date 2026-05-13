@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Screening Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Patient Screening Records</h1>
+    <table id="patientTable">
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Study Date</th>
+                <th>Country</th>
+                <th>CAD Score</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Fetch data from your backend API
+        fetch('http://localhost:8082/api/patients')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = ''; // Clear loading message
+                
+                data.forEach(patient => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).textContent = patient.patientId;
+                    row.insertCell(1).textContent = patient.studyDate;
+                    row.insertCell(2).textContent = patient.country || 'N/A';
+                    row.insertCell(3).textContent = patient.cadScore || 'N/A';
+                });
+            })
+            .catch(error => {
+                document.getElementById('tableBody').innerHTML = 
+                    '<tr><td colspan="4">Error loading data. Make sure backend is running at http://localhost:8081</td></tr>';
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>
